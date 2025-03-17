@@ -1,0 +1,46 @@
+[project]
+name = "skater-cli"
+version = "0.1.0"
+description = "Command line interface for running skater"
+authors = [
+    {name = "Joshua Saltzberg", email = "joshua.saltzberg@einsteinmed.edu"},
+]
+dependencies = [
+    "numpy>=1.24.3",
+    "pyyaml>=6.0",
+    "psutil>=5.9.8",
+    "formats@git+ssh://git@github.com/TheRealGambleLab/skater-formats",
+    "annotate@git+ssh://git@github.com/TheRealGambleLab/skater-annotate",
+    "equations@git+ssh://git@github.com/TheRealGambleLab/skater-equations",
+    "loadSkater@git+ssh://git@github.com/TheRealGambleLab/skater-load",
+    "optimizeSkater@git+ssh://git@github.com/TheRealGambleLab/skater-optimize",
+    "optimizeTT@git+ssh://git@github.com/TheRealGambleLab/tt-optimize",
+    "loadTT@git+ssh://git@github.com/TheRealGambleLab/tt-load",
+    "output@git+ssh://git@github.com/TheRealGambleLab/skater-output",
+	"skaterWatcher@git+ssh://git@github.com/TheRealGambleLab/skater-slurm"
+]
+requires-python = ">=3.10.8"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.scripts]
+skater = "app.cli:main"
+tt-skater = "app.tt_cli:main"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = false
+
+[tool.uv.sources]
+formats = {path = "../skater-formats", editable = true}
+loadSkater = {path = "../skater-load", editable = true}
+annotate = {path = "../skater-annotate", editable = true}
+equations = {path = "../skater-equations", editable = true}
+optimizeSkater = {path = "../skater-optimize", editable = true}
+optimizeTT = {path = "../tt-optimize", editable = true}
+loadTT = {path = "../tt-load", editable = true}
+output = {path = "../skater-output", editable = true}
+skaterWatcher = {path = "../skater-slurm", editable = true}
