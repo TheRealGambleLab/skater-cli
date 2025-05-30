@@ -1,6 +1,7 @@
 import yaml
 import logging
 import argparse
+import numpy as np
 
 from pathlib import Path
 
@@ -22,7 +23,7 @@ def tt_watcher(args):
 def tt_run(args):
 	from optimizeTT import optimizeGene
 	solution = optimizeGene(Path(args.config),args.gene,args.run)
-	print(f"Ran\t{solution.scores}")
+	print(f"Ran\t{np.sum(solution.scores)}")
 
 def tt_load(args):
 	from loadTT import saveGene, LoadingError
