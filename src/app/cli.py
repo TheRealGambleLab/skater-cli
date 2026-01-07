@@ -83,7 +83,7 @@ def skater_output(args):
 		config = yaml.safe_load(file)
 
 	# Define bounds
-	bounds = Bounds
+	bounds = Bounds()
 	# gs
 	if args.Gs_lb != None: lb = args.Gs_lb
 	else: lb = bounds.gs[0]*1.01
@@ -126,12 +126,6 @@ def skater_output(args):
 	if args.elongation_ub != None: ub = args.elongation_ub
 	else: ub = bounds.elongation[1]*0.99
 	bounds.elongation = (lb,ub)
-	# alpha
-	if args.alpha_lb != None: lb = args.alpha_lb
-	else: lb = bounds.alpha[0]*1.01
-	if args.alpha_ub != None: ub = args.alpha_ub
-	else: ub = min(np.array(config['experimental']['gamma']))*0.99
-	bounds.alpha = (lb,ub)
 	# contamination
 	if args.contamination_lb != None: lb = args.contamination_lb
 	else: lb = bounds.contamination[0]*1.01
