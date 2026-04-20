@@ -15,7 +15,6 @@ dependencies = [
     "loadSkater@git+ssh://git@github.com/TheRealGambleLab/skater-load",
     "optimizeSkater@git+ssh://git@github.com/TheRealGambleLab/skater-optimize",
     "optimizeTT@git+ssh://git@github.com/TheRealGambleLab/tt-optimize",
-    "loadTT@git+ssh://git@github.com/TheRealGambleLab/tt-load",
     "output@git+ssh://git@github.com/TheRealGambleLab/skater-output",
 	"skaterWatcher@git+ssh://git@github.com/TheRealGambleLab/skater-slurm"
 ]
@@ -41,6 +40,5 @@ annotate = {path = "../skater-annotate", editable = true}
 equations = {path = "../skater-equations", editable = true}
 optimizeSkater = {path = "../skater-optimize", editable = true}
 optimizeTT = {path = "../tt-optimize", editable = true}
-loadTT = {path = "../tt-load", editable = true}
 output = {path = "../skater-output", editable = true}
 skaterWatcher = {path = "../skater-slurm", editable = true}

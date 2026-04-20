@@ -19,7 +19,7 @@ def skater_annotate(args):
 		annotate(args.refFlat,args.output,args.cps,args.intron,args.use_annotated_introns,args.merge_cps,args.min_intron_reads,args.min_intron_distance,args.min_intron_fraction)
 
 def skater_unpack(args):
-	from annotate import dumpGenome
+	from loadSkater.genome import dumpGenome
 	if args.config != None:
 		with open(args.config,'r') as file:
 			config = yaml.safe_load(file)
@@ -52,10 +52,9 @@ def skater_load(args):
 	from loadSkater import saveGene, LoadingError
 	logger = logging.getLogger('__name__')
 	try:
-		events = saveGene(args.gene,Path(args.config))
-		out_str = 'True\t'
-		for x in events: out_str += x+','
-		print(out_str[:-1])
+		required_events,optional_events = saveGene(args.gene,Path(args.config),False)
+		event_str = 'True\t' + ''.join([f'{x},' for x in required_events])[:-1]+';'+''.join([f'{x},' for x in optional_events])[:-1]
+		print(event_str)
 	except LoadingError as e:
 		logger.debug('unsolvable')
 		print(e.args[0])

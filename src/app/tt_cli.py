@@ -26,10 +26,10 @@ def tt_run(args):
 	print(f"Ran\t{np.sum(solution.scores)}")
 
 def tt_load(args):
-	from loadTT import saveGene, LoadingError
+	from loadSkater import saveGene, LoadingError
 	logger = logging.getLogger('__name__')
 	try:
-		required_events,optional_events = saveGene(args.gene,Path(args.config))
+		required_events,optional_events = saveGene(args.gene,Path(args.config),True)
 		event_str = 'True\t' + ''.join([f'{x},' for x in required_events])[:-1]+';'+''.join([f'{x},' for x in optional_events])[:-1]
 		print(event_str)
 	except LoadingError as e:
@@ -56,7 +56,7 @@ def tt_output(args):
 	outputDataframe(Path(args.config),Path(args.out))
 
 def tt_pro(args):
-	from loadTT.pro import getProCov
+	from loadSkater.pro import getProCov
 	# Get config file
 	with open(args.config,'r') as file:
 		config:dict = yaml.safe_load(file)
