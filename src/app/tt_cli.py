@@ -46,6 +46,7 @@ def tt_compile(args):
 	write_event = config['files']['write_events'] if config else False
 	if args.write_event:
 		write_event = True
+	max_junctions = config['files']['max_junctions'] if config else args.max_junctions
 
 	if args.function_directory:
 		function_dir = Path(args.function_directory)
@@ -53,7 +54,7 @@ def tt_compile(args):
 		function_dir = Path(config['files']['function_directory'])
 	else: raise TypeError('Need to provide function directory or config path')
 	
-	print(compile(args.event,function_dir,write_event,True))
+	print(compile(args.event,function_dir,write_event,True,max_junctions))
 
 def tt_output(args):
 	from output import outputDataframe
@@ -116,6 +117,7 @@ def main():
 	subparser_compile.add_argument('--config','-c',required=False,help = 'path to config file')
 	subparser_compile.add_argument('--function_directory',required=False,help='path to function directory') #NOTE: EXPLAIN THIS IS AN OVERIDE OF CONFIG FILE
 	subparser_compile.add_argument('--write_event',action='store_true',help='write equations for new events') #NOTE: NEED HELP INFO HERE
+	subparser_compile.add_argument('--max_junctions',type=int,default=10,help='maximum number of splice junctions to compile for new events')
 
 	subparser_run = subparser.add_parser('run',help='launch optimization algorithm for a single gene')
 	subparser_run.set_defaults(func=tt_run)
@@ -163,7 +165,7 @@ def main():
 				continue
 			elif isinstance(val,bool): 
 				if val: cmd += f" --{flag}"
-			elif val == '': continue
+			elif val == '' or val == None: continue
 			elif len(flag) == 1: cmd += f" -{flag} {val}"
 			else: cmd += f" --{flag} {val}"
 		submit_sbatch(args.partition,args.job_name,args.mem,args.time_limit,int(args.cpu),Path(args.log),cmd)
