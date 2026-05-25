@@ -27,7 +27,7 @@ def tt_run(args):
 
 def tt_load(args):
 	from loadSkater import saveGene, LoadingError
-	logger = logging.getLogger('__name__')
+	logger = logging.getLogger('__main__')
 	try:
 		required_events,optional_events = saveGene(args.gene,Path(args.config),True)
 		event_str = 'True\t' + ''.join([f'{x},' for x in required_events])[:-1]+';'+''.join([f'{x},' for x in optional_events])[:-1]
@@ -39,14 +39,18 @@ def tt_load(args):
 def tt_compile(args):
 	from equations.compile import compile
 
-	write_event = args.write_event
-	if args.function_directory:
-		function_dir = Path(args.function_directory)
-	elif args.config:
+	config = None
+	if args.config:
 		with open(args.config,'r') as file:
 			config = yaml.safe_load(file)
+	write_event = config['files']['write_events'] if config else False
+	if args.write_event:
+		write_event = True
+
+	if args.function_directory:
+		function_dir = Path(args.function_directory)
+	elif config:
 		function_dir = Path(config['files']['function_directory'])
-		write_event = config['files']['write_events']
 	else: raise TypeError('Need to provide function directory or config path')
 	
 	print(compile(args.event,function_dir,write_event,True))

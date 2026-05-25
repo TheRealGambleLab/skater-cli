@@ -1,0 +1,85 @@
+files:
+  annotation: annotation.tsv # Path to genome annotation (produced by skater annotate)
+  RNA-seq: null # Path to RNA-seq bam file (Optional: used by annotate as intron identification source)
+  bam: # Path to .bam files for each timepoint (in the same order as experimental:times)
+    - 0min.bam # DRB blocked
+    - 5min.bam
+    - 10min.bam
+    - 15min.bam
+    - 20min.bam
+    - 25min.bam
+    - 30min.bam
+    - 35min.bam
+    - inf.bam # Steady state
+  function_directory: skater_functions/ # Path to directory for compile equations
+  write_events: true # Compile new equations for events discovered in this run
+
+annotation:
+  refFlat: refFlat122316.txt # Path to refFlat file for annotation
+  cps_path: null # Path to CPS annotation (Optional: separate file for cell specific CPS annotations. By default will use those from refFlat)
+  use_annotated_introns: false # Keep refFlat Introns in addition to those derived from RNA-seq file (if provided)
+  merge_cps: false # Keep both refFlat and cps file annotations
+  min_intron_fraction: 0.05 # Minimum fraction of maximum junctional read count to call intron
+  min_length: 200 # minimum length for intron defintion
+  min_reads: 2 # minimum number of reads for intron definition
+
+experimental: # beta and gamma can be calculated using the calcBetaGamma.py script
+  beta: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0] # Mammalian reads per timepoint / mammalian reads in steady state
+  gamma: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0] # Exon/Intron ratio for drosophila reads
+  times: [0, 5, 10, 15, 20, 25, 30, 35, .inf] # Timepoints of sample collection following DRB release(0 is DRB blocked and .inf is steady state)
+
+parser:
+  distance: 300 # Minimum gene length to attempt optimization
+  cov:
+    timepoint: [-1] # List of indecies of timepoints used to determine minimal coverage for optimization. If any provided timepoint passes the coverage threshold, the gene will be attempted
+    fraction: 0.001 # Minimum number depth in timepoint required to attempt optimization (reads / nt)
+  tss:
+    spacing: 150 # Distance between TSS to group together (group assigned to upstream TSS)
+    timepoint: 1 # Index of timepoint used for determining TSS 
+    mask: 100 # Distance downstream of TSS masked when calculating which TSS is primary
+    distance: 200 # How many nt downstream of mask used to determine the primary TSS
+    threshold: 0.1 # Exclude genes with alternative TSS within this fractional usage of the primary TSS
+  tes:
+    spacing: 150 # Distance between CPS to group together (group assigned to downstream CPS)
+    downstream: 5000 # Maximum number of downstream nucleotides to load coverage for
+  intron:
+    de_novo_introns: false # Use introns from timepoint instead of from annotation file
+    timepoint: [0] # Timepoints used to identify introns (only in de_novo_introns mode)
+    skip_length: 10 # Ignore skipped read-alignment gaps <= this many nt when scoring splicing status
+
+initialize: # Parameters for initializing optimizer
+  nt_step: 10 # Nucleotides to interogate (only every X nucleotides will be used by optimizer)
+  window_size: 1000 # Window size for variance filter
+  mask: 100 # Distance from TSS masked 
+  likelihood: true # Use likelihood for scoring instead of residual sum of squares
+  unreleased: false # Include uncleaved mRNAs at the terminal CPS in contamination
+
+optimizer: # Parameters for optimizer
+  seed: False # Optional seed for optimization run (DEBUG PARAMETER ONLY)
+  min_iter: 1000 # Minimum # of generation for optimizer 
+  max_iter: 50000 # Maximum # of generation for optimizer
+  pop_size: 100 # Population size
+  min_score: 0.0001 # Exit criteria: max(score) - min(score)
+  mutation: [0.5, 1.0] # Mutation rate range [lower, upper]
+  crossover: 0.8 # Crossover rate
+  save_state: 100 # Number of generations between optimizer save-states (0 if no saving interum solutions)
+  track_evolution: false # Save all parametersets for each generation (DEBUG PARAMETER ONLY)
+  param_converge_threshold: [0.1, 0.01] # Threshold for calling parameters converged [wide, strict]
+  parallel: false # parallelize RSS calculations with multiprocessing
+
+cluster:
+  num_runs: 3 # Number of runs to launch in parallel
+  max_runs: 9 # Maximum number of runs per gene
+  purge: true # delete coverage file after optimizer is complete
+  user: jsaltzberg # User name for slurm hpc.
+  partition: [quick, ht, ht] # Partitions to run [coverage_loading, event_compilation, optimizations] on.
+  max_jobs: [400, 4000, 5000] # Maximum number of jobs per partition (no new jobs will be submitted until total number of user's jobs on the partition are less than this number)
+  time_limit: ['2:00:00','12:00:00','12:00:00'] # Time limits for each job on each partition
+  mem: ['6gb','6gb','6gb'] # Maximum memory usage for each job on each partition
+  cpu: [1,1,1] # number of cpus for each job on each partition
+
+output:
+  directory: skater_directory/ # Output directory 
+  debug: false # Debug logs
+  converge_plot: false # Create plot of population as it converges (Requires track_evolution: true)
+  fit_plot: false # Create plot of best solution compared to sequencing data

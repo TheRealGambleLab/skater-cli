@@ -3,7 +3,6 @@ import yaml
 import psutil
 import logging
 import argparse
-import numpy as np
 
 from pathlib import Path
 
@@ -50,7 +49,7 @@ def skater_run(args):
 
 def skater_load(args):
 	from loadSkater import saveGene, LoadingError
-	logger = logging.getLogger('__name__')
+	logger = logging.getLogger('__main__')
 	try:
 		required_events,optional_events = saveGene(args.gene,Path(args.config),False)
 		event_str = 'True\t' + ''.join([f'{x},' for x in required_events])[:-1]+';'+''.join([f'{x},' for x in optional_events])[:-1]
@@ -62,14 +61,18 @@ def skater_load(args):
 def skater_compile(args):
 	from equations.compile import compile
 
-	write_event = args.write_event
-	if args.function_directory:
-		function_dir = Path(args.function_directory)
-	elif args.config:
+	config = None
+	if args.config:
 		with open(args.config,'r') as file:
 			config = yaml.safe_load(file)
+	write_event = config['files']['write_events'] if config else False
+	if args.write_event:
+		write_event = True
+
+	if args.function_directory:
+		function_dir = Path(args.function_directory)
+	elif config:
 		function_dir = Path(config['files']['function_directory'])
-		write_event = config['files']['write_events']
 	else: raise TypeError('Need to provide function directory or config path')
 	
 	print(compile(args.event,function_dir,write_event,False))
@@ -77,9 +80,6 @@ def skater_compile(args):
 def skater_output(args):
 	from formats import Bounds
 	from output import outputDataframe
-
-	with open(args.config,'r') as file:
-		config = yaml.safe_load(file)
 
 	# Define bounds
 	bounds = Bounds()
@@ -115,7 +115,7 @@ def skater_output(args):
 	bounds.splice = (lb,ub)
 	# cleave
 	if args.cleave_lb != None: lb = args.cleave_lb
-	else: lb = bounds.gb[0]*1.01
+	else: lb = bounds.cleave[0]*1.01
 	if args.cleave_ub != None: ub = args.cleave_ub
 	else: ub = bounds.cleave[1]*0.99
 	bounds.cleave = (lb,ub)
@@ -217,8 +217,6 @@ def main():
 	subparser_output.add_argument('--cleave_ub',required=False,type=float,help='upper bound for cleavage rate')
 	subparser_output.add_argument('--elongation_lb',required=False,type=float,help='lower bound for elongation rate')
 	subparser_output.add_argument('--elongation_ub',required=False,type=float,help='upper bound for elongation rate')
-	subparser_output.add_argument('--alpha_lb',required=False,type=float,help='lower bound for alpha')
-	subparser_output.add_argument('--alpha_ub',required=False,type=float,help='upper bound for alpha')
 	subparser_output.add_argument('--contamination_lb',required=False,type=float,help='lower bound for contamination')
 	subparser_output.add_argument('--contamination_ub',required=False,type=float,help='upper bound for contamination')
 
@@ -253,7 +251,7 @@ def main():
 				continue
 			elif isinstance(val,bool): 
 				if val: cmd += f" --{flag}"
-			elif val == '': continue
+			elif val == '' or val == None: continue
 			elif len(flag) == 1: cmd += f" -{flag} {val}"
 			else: cmd += f" --{flag} {val}"
 		submit_sbatch(args.partition,args.job_name,args.mem,args.time_limit,int(args.cpu),Path(args.log),cmd)

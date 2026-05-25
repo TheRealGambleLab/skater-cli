@@ -1,0 +1,66 @@
+files:
+  annotation: annotation.tsv # Path to annotation file (created using annotate)
+  RNA-seq: null # Path to RNA-seq bam file (Optional: used by annotate as intron identification source)
+  PRO-seq: PRO.bam # Path to PRO-seq bam file
+  TT-seq: TT.bam # Path to TT-seq bam file. (If multiple files, pass in a list)
+  function_directory: tt_functions/ # Path to directory for compile equations
+  write_events: true # Compile new equations for events discovered in this run
+
+annotation:
+  refFlat: refFlat122316.txt # Path to refFlat file for annotation
+  cps_path: null # Path to CPS annotation (Optional: separate file for cell specific CPS annotations. By default will use those from refFlat)
+  use_annotated_introns: false # Keep refFlat Introns in addition to those derived from RNA-seq file (if provided)
+  merge_cps: false # Keep both refFlat and cps file annotations
+  min_intron_fraction: 0.05 # Minimum fraction of maximum junctional read count to call intron
+  min_length: 200 # Minimum length for intron defintion
+  min_reads: 2 # Minimum number of reads for intron definition
+
+experimental:
+  label: 10.0 # labeling time (List of times if multiple TT-seq files.)
+  scale_factor: [1.0] # If multiple TT-seq files, list of multipliers to them relative to each other.
+
+parser:
+  distance: 300 # Minimum gene length to attempt optimization
+  cov:
+    PRO-seq: 0.001 # Minimum PRO-seq depth for optimization (reads / nt)
+    TT-seq: 0.001 # Minimum TT-seq depth to attempt optimization (reads / nt)
+  tss:
+    spacing: 150 # Distance between TSS to group together (group assigned to upstream TSS)
+    distance: 200 # Promoter proximal pause region (used to calculate primary TSS)
+    threshold: 0.1 # Exclude genes with alternative TSS within this fractional usage of the primary TSS
+  tes:
+    spacing: 150 # Distance between CPS to group together (group assigned to downstream CPS)
+    downstream: 5000 # Maximum number of downstream nucleotides to load coverage for
+  intron:
+    de_novo_introns: false # Use TT-seq data for intron definition
+    skip_length: 10 # Ignore skipped read-alignment gaps <= this many nt when scoring TT-seq splicing status
+
+optimizer: # Parameters for optimizer
+  seed: False # Optional seed for optimization run (DEBUG PARAMETER ONLY)
+  min_iter: 100 # Minimum # of optimization generations
+  max_iter: 50000 # Maximum # of optimization generations
+  pop_size: 100 # Population size (must be over 4)
+  min_score: 0.0001 # Exit criteria: max(score) - min(score)
+  mutation: [0.5, 1.0] # Mutation rate range [lower, upper]
+  crossover: 0.8 # Crossover rate
+  save_state: 100 # Number of generations between optimizer save-states (0 if no saving interim solutions)
+  track_evolution: false # Save all parameters for each generation (DEBUG PARAMETER ONLY)
+  param_converge_threshold: [0.1, 0.01] # Threshold for calling parameters converged [wide, strict]
+  parallel: false # Parallelize RSS calculations with multiprocessing
+
+cluster:
+  num_runs: 3 # Number of runs to launch in parallel
+  max_runs: 9 # Maximum number of runs per gene
+  purge: true # Delete coverage file after optimizer is complete
+  user: jsaltzberg # User name for slurm hpc.
+  partition: [quick, ht, ht] # Partitions for each job type [coverage_loading, event_compilation, optimizations]
+  max_jobs: [400, 4000, 5000] # Maximum number of jobs per partition (no new jobs will be submitted until total number of user's jobs on the partition are less than this number)
+  time_limit: ['2:00:00','12:00:00','12:00:00'] # Time limits for each job on each partition
+  mem: [6gb,6gb,6gb] # Maximum memory usage for each job on each partition
+  cpu: [1,1,1] # number of cpus for each job on each partition
+
+output:
+  directory: tt_directory/ # Output directory 
+  debug: true # Debug logs
+  converge_plot: false # Create plot of population as it converges (Requires track_evolution: true)
+  fit_plot: false # Create plot of best solution compared to sequencing data
