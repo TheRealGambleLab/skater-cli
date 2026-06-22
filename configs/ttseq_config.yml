@@ -32,9 +32,7 @@ parser:
   tes:
     spacing: 150 # Distance between CPS to group together (group assigned to downstream CPS)
     downstream: 5000 # Maximum number of downstream nucleotides to load coverage for
-  intron:
-    de_novo_introns: false # Use TT-seq data for intron definition
-    skip_length: 10 # Ignore skipped read-alignment gaps <= this many nt when scoring TT-seq splicing status
+  spliceout_distance: 150 # Minimum distance between final nt and junction to require invervening introns to be spliced
 
 optimizer: # Parameters for optimizer
   seed: False # Optional seed for optimization run (DEBUG PARAMETER ONLY)

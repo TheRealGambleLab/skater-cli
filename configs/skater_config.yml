@@ -43,10 +43,7 @@ parser:
   tes:
     spacing: 150 # Distance between CPS to group together (group assigned to downstream CPS)
     downstream: 5000 # Maximum number of downstream nucleotides to load coverage for
-  intron:
-    de_novo_introns: false # Use introns from timepoint instead of from annotation file
-    timepoint: [0] # Timepoints used to identify introns (only in de_novo_introns mode)
-    skip_length: 10 # Ignore skipped read-alignment gaps <= this many nt when scoring splicing status
+  spliceout_distance: 150 # Minimum distance between final nt and junction to require invervening introns to be spliced
 
 initialize: # Parameters for initializing optimizer
   nt_step: 10 # Nucleotides to interogate (only every X nucleotides will be used by optimizer)
