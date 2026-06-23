@@ -21,13 +21,14 @@ annotation:
   use_annotated_introns: false # Keep refFlat Introns in addition to those derived from RNA-seq file (if provided)
   merge_cps: false # Keep both refFlat and cps file annotations
   min_intron_fraction: 0.05 # Minimum fraction of maximum junctional read count to call intron
-  min_length: 200 # minimum length for intron defintion
-  min_reads: 2 # minimum number of reads for intron definition
+  min_length: 50 # minimum length for intron defintion
+  min_reads: 4 # minimum number of reads for intron definition
 
 experimental: # beta and gamma can be calculated using the calcBetaGamma.py script
   beta: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0] # Mammalian reads per timepoint / mammalian reads in steady state
   gamma: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0] # Exon/Intron ratio for drosophila reads
   times: [0, 5, 10, 15, 20, 25, 30, 35, .inf] # Timepoints of sample collection following DRB release(0 is DRB blocked and .inf is steady state)
+  alpha: 0.31 # Drosophila exon intron ratio
 
 parser:
   distance: 300 # Minimum gene length to attempt optimization
@@ -43,11 +44,9 @@ parser:
   tes:
     spacing: 150 # Distance between CPS to group together (group assigned to downstream CPS)
     downstream: 5000 # Maximum number of downstream nucleotides to load coverage for
-  spliceout_distance: 150 # Minimum distance between final nt and junction to require invervening introns to be spliced
+  spliceout_distance: 200 # Minimum distance between final nt and junction to require invervening introns to be spliced
 
 initialize: # Parameters for initializing optimizer
-  nt_step: 10 # Nucleotides to interogate (only every X nucleotides will be used by optimizer)
-  window_size: 1000 # Window size for variance filter
   mask: 100 # Distance from TSS masked 
   likelihood: true # Use likelihood for scoring instead of residual sum of squares
   unreleased: false # Include uncleaved mRNAs at the terminal CPS in contamination

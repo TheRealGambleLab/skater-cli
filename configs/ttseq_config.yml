@@ -13,8 +13,8 @@ annotation:
   use_annotated_introns: false # Keep refFlat Introns in addition to those derived from RNA-seq file (if provided)
   merge_cps: false # Keep both refFlat and cps file annotations
   min_intron_fraction: 0.05 # Minimum fraction of maximum junctional read count to call intron
-  min_length: 200 # Minimum length for intron defintion
-  min_reads: 2 # Minimum number of reads for intron definition
+  min_length: 50 # Minimum length for intron defintion
+  min_reads: 4 # Minimum number of reads for intron definition
 
 experimental:
   label: 10.0 # labeling time (List of times if multiple TT-seq files.)
@@ -32,7 +32,7 @@ parser:
   tes:
     spacing: 150 # Distance between CPS to group together (group assigned to downstream CPS)
     downstream: 5000 # Maximum number of downstream nucleotides to load coverage for
-  spliceout_distance: 150 # Minimum distance between final nt and junction to require invervening introns to be spliced
+  spliceout_distance: 200 # Minimum distance between final nt and junction to require invervening introns to be spliced
 
 optimizer: # Parameters for optimizer
   seed: False # Optional seed for optimization run (DEBUG PARAMETER ONLY)
