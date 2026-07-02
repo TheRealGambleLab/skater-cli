@@ -5,7 +5,8 @@ files:
   TT-seq: TT.bam # Path to TT-seq bam file. (If multiple files, pass in a list)
   function_directory: tt_functions/ # Path to directory for compile equations
   write_events: true # Compile new equations for events discovered in this run
-  max_junctions: 10 # Maximum number of splice junctions to attempt an event (Only when writign events)
+  max_junctions: 10 # Maximum number of splice junctions to attempt an event (Only when writing events)
+  optional_events: true # Allow for compilation of junctions with intervening introns
 
 annotation:
   refFlat: refFlat122316.txt # Path to refFlat file for annotation

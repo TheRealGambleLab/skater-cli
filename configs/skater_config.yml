@@ -13,7 +13,8 @@ files:
     - inf.bam # Steady state
   function_directory: skater_functions/ # Path to directory for compile equations
   write_events: true # Compile new equations for events discovered in this run
-  max_junctions: 10 # Maximum number of splice junctions to attempt an event (Only when writign events)
+  max_junctions: 10 # Maximum number of splice junctions to attempt an event (Only when writing events)
+  optional_events: false # Allow for compilation of junctions with intervening introns
 
 annotation:
   refFlat: refFlat122316.txt # Path to refFlat file for annotation
