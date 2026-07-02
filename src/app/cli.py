@@ -154,6 +154,7 @@ def main():
 	parser.add_argument('--mem',default='20gb')
 	parser.add_argument('--cpu',default=4,type=int)
 	parser.add_argument('--log',default='./slurm-%j.out')
+	parser.add_argument('--debug',action='store_true')
 
 	subparser = parser.add_subparsers(dest='command')
 	
@@ -234,7 +235,8 @@ def main():
 		fmt = logging.Formatter('%(asctime)s\t%(message)s','%Y-%m-%d %H:%M:%S')
 	hdr.setFormatter(fmt)
 	logger.addHandler(hdr)
-	logger.setLevel('INFO')
+	if args.debug:logger.setLevel('DEBUG')
+	else: logger.setLevel('INFO')
 
 
 	if args.command is None: # No command given
