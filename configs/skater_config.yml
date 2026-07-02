@@ -51,6 +51,7 @@ initialize: # Parameters for initializing optimizer
   mask: 100 # Distance from TSS masked 
   likelihood: true # Use likelihood for scoring instead of residual sum of squares
   unreleased: false # Include uncleaved mRNAs at the terminal CPS in contamination
+  nt_step: 10 # Step size for time to nucleotide calculations
 
 optimizer: # Parameters for optimizer
   seed: False # Optional seed for optimization run (DEBUG PARAMETER ONLY)
