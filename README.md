@@ -73,9 +73,6 @@ Typical SKaTER workflow:
 # Build an annotation file from the values in the configuration.
 skater annotate --config my_skater.yml
 
-# Create the genome database used by the analysis.
-skater unpack --config my_skater.yml
-
 # Load coverage for a single gene
 skater load --config my_skater.yml --gene GENE_NAME
 
@@ -94,7 +91,6 @@ PRO-seq coverage:
 
 ```bash
 tt-skater annotate --config my_ttseq.yml
-tt-skater unpack --config my_ttseq.yml
 tt-skater pro --config my_ttseq.yml --out pro_coverage.bw
 tt-skater load --config my_ttseq.yml --gene GENE_NAME
 tt-skater compile --config my_ttseq.yml --event EVENT_NAM

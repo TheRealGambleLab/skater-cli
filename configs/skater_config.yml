@@ -70,7 +70,7 @@ cluster:
   num_runs: 3 # Number of runs to launch in parallel
   max_runs: 9 # Maximum number of runs per gene
   purge: true # delete coverage file after optimizer is complete
-  user: jsaltzberg # User name for slurm hpc.
+  user: username # User name for slurm hpc.
   partition: [quick, ht, ht] # Partitions to run [coverage_loading, event_compilation, optimizations] on.
   max_jobs: [400, 4000, 5000] # Maximum number of jobs per partition (no new jobs will be submitted until total number of user's jobs on the partition are less than this number)
   time_limit: ['2:00:00','12:00:00','12:00:00'] # Time limits for each job on each partition

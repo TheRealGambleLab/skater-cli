@@ -6,7 +6,7 @@ import numpy as np
 from pathlib import Path
 
 from .slurm import submit_sbatch
-from .cli import skater_annotate, skater_unpack, ResourceUsageFilter
+from .cli import skater_annotate, ResourceUsageFilter
 
 def tt_watcher(args):
 	# Find path to config file
@@ -95,12 +95,6 @@ def main():
 	subparser_annotate.add_argument('--min_intron_distance',default=50,type=int,help='minimum distance required to define an intron')
 	subparser_annotate.add_argument('--min_intron_fraction',default=0.05,type=float,help='minimum fraction of total junctions to define intron')
 	# TODO: ADD HELP LINE TO SUMMARIZE COLUMN NAMES OF OUTPUT
-
-	subparser_unpack = subparser.add_parser('unpack',help='unpacks data in annotation file and stores in pickled database')
-	subparser_unpack.set_defaults(func=skater_unpack)
-	subparser_unpack.add_argument('--annotation','-a',default=None,help='path to annotation tsv')
-	subparser_unpack.add_argument('--output','-o',default=None,help='path to output database file')
-	subparser_unpack.add_argument('--config','-c',default=None,help='path to config file')
 
 	subparser_watcher = subparser.add_parser('watcher',help = 'launch watcher script to submit jobs to run on HPC')
 	subparser_watcher.set_defaults(func=tt_watcher)

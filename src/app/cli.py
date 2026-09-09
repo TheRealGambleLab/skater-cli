@@ -17,19 +17,6 @@ def skater_annotate(args):
 	else:
 		annotate(args.refFlat,args.output,args.cps,args.intron,args.use_annotated_introns,args.merge_cps,args.min_intron_reads,args.min_intron_distance,args.min_intron_fraction)
 
-def skater_unpack(args):
-	from loadSkater.genome import dumpGenome
-	if args.config != None:
-		with open(args.config,'r') as file:
-			config = yaml.safe_load(file)
-		out_path = Path(config['output']['directory'])/'temp/genome.db'
-		annotation_path = Path(config['files']['annotation'])
-	else:
-		annotation_path = Path(args.annotation)
-		out_path = Path(args.output)
-
-	dumpGenome(annotation_path,out_path)
-
 def skater_watcher(args):
 	# Find path to config file
 	config_path = Path(args.config)
@@ -171,12 +158,6 @@ def main():
 	subparser_annotate.add_argument('--min_intron_distance',default=50,type=int,help='minimum distance required to define an intron')
 	subparser_annotate.add_argument('--min_intron_fraction',default=0.05,type=float,help='minimum fraction of total junctions to define intron')
 	# TODO: ADD HELP LINE TO SUMMARIZE COLUMN NAMES OF OUTPUT
-
-	subparser_unpack = subparser.add_parser('unpack',help='unpacks data in annotation file and stores in pickled database')
-	subparser_unpack.set_defaults(func=skater_unpack)
-	subparser_unpack.add_argument('--annotation','-a',default=None,help='path to annotation tsv')
-	subparser_unpack.add_argument('--output','-o',default=None,help='path to output database file')
-	subparser_unpack.add_argument('--config','-c',default=None,help='path to config file')
 
 	subparser_watcher = subparser.add_parser('watcher',help = 'launch watcher script to submit jobs to run on HPC')
 	subparser_watcher.set_defaults(func=skater_watcher)
